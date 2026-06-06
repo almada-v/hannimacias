@@ -1,0 +1,170 @@
+---
+// src/components/Galeria.astro
+import { Image } from 'astro:assets';
+
+import fotoCabina from '../assets/cabina.webp';
+import fotoTratamiento from '../assets/tratamiento.webp';
+import fotoProductos from '../assets/productos.webp';
+
+const telefonoWhatsApp = "523151195149";
+
+const elementosGaleria = [
+  // OPTIMIZACIÓN: Movimos la promoción a la primera posición para que sea lo primero visible en celulares
+  {
+    tipo: "promocion",
+    tituloPromo: "Protocolo Glow de Temporada",
+    subtituloPromo: "Beneficio Exclusivo",
+    descPromo: "En la compra de tu Limpieza Facial Profunda + HydraFacial, recibe una sesión de Fototerapia LED regenerativa completamente de cortesía durante este mes.",
+    precioAnterior: "$1,100",
+    precioEspecial: "$950 MXN",
+    linkWhatsAppDirecto: `https://wa.me/${telefonoWhatsApp}?text=${encodeURIComponent("¡Hola! Vi la promoción del Protocolo Glow de Temporada en la web y me gustaría agendarlo.")}`
+  },
+  {
+    tipo: "foto",
+    srcLocal: fotoCabina,
+    alt: "Cabina de Tratamiento Premium",
+    titulo: "Instalaciones",
+    desc: "Un santuario privado diseñado minuciosamente para tu relajación y cuidado cutáneo."
+  },
+  {
+    tipo: "foto",
+    srcLocal: fotoTratamiento,
+    alt: "Procedimiento de Limpieza Facial",
+    titulo: "Procedimientos",
+    desc: "Protocolos personalizados ejecutados con el máximo respeto a tu barrera cutánea."
+  },
+  {
+    tipo: "foto",
+    srcLocal: fotoProductos,
+    alt: "Línea Dermocosmética de Alta Gama",
+    titulo: "Línea Dermocosmética",
+    desc: "Seleccionamos de manera rigurosa activos de grado médico y alta potencia para tu piel."
+  }
+];
+---
+
+<section id="galeria" class="py-16 md:py-24 bg-[#ffffff] select-none overflow-hidden pb-24">
+  <div class="max-w-6xl mx-auto px-6">
+    
+    <!-- Cabecera Estilo Boutique Cosmética -->
+    <div class="mb-12 text-center">
+      <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-[#737373]">
+        Conoce Nuestro Espacio
+      </span>
+      <h2 class="text-3xl md:text-5xl font-serif text-[#000000] mt-2">Experiencia & Beneficios</h2>
+      <div class="w-12 h-0.5 bg-[#4d2819] mx-auto mt-4"></div>
+    </div>
+
+    <!-- CARRUSEL TÁCTIL: Ahora la promo arranca al inicio de la navegación lateral móvil -->
+    <div class="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scrollbar-none scroll-smooth items-stretch">
+      {elementosGaleria.map((item) => (
+        
+        item.tipo === "foto" ? (
+          <div class="min-w-[92%] sm:min-w-[340px] md:min-w-full snap-center flex flex-col bg-white rounded-3xl border border-[#737373]/10 shadow-[0_4px_30px_rgba(0,0,0,0.01)] overflow-hidden transition-all duration-300">
+            <div class="w-full h-76 sm:h-80 overflow-hidden relative bg-neutral-100">
+              <Image 
+                src={item.srcLocal!} 
+                alt={item.alt!} 
+                class="w-full h-full object-cover transition-transform duration-700 image-zoom" 
+                width={480}
+                height={380}
+                widths={[360, 480, 720]}
+                sizes="(max-width: 640px) 440px, 480px"
+                loading="lazy"
+                fetchpriority="low"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+            </div>
+            <div class="p-8 flex flex-col flex-grow text-left justify-between bg-white">
+              <div class="space-y-2">
+                <h3 class="text-[11px] font-bold tracking-widest text-[#4d2819] uppercase">{item.titulo}</h3>
+                <p class="text-[#737373] text-sm leading-relaxed font-light text-justify">{item.desc}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          
+          <div class="min-w-[92%] sm:min-w-[340px] md:min-w-full snap-center flex flex-col bg-[#4d2819] rounded-3xl p-8 text-left justify-between shadow-xl shadow-[#4d2819]/10 relative overflow-hidden text-white border border-[#4d2819]">
+            <div class="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none"></div>
+            
+            <div class="space-y-4 relative z-10">
+              <span class="inline-block text-[8px] font-bold tracking-[0.25em] uppercase bg-white/10 text-white rounded-full px-3 py-1 border border-white/10">
+                {item.subtituloPromo}
+              </span>
+              <h3 class="text-2xl font-serif text-white leading-tight tracking-tight">
+                {item.tituloPromo}
+              </h3>
+              <p class="text-white/80 text-sm leading-relaxed font-light text-justify pt-1">
+                {item.descPromo}
+              </p>
+            </div>
+
+            <div class="pt-8 space-y-4 relative z-10 mt-auto">
+              <div class="flex items-baseline gap-2">
+                <span class="text-white/40 line-through text-xs font-light">{item.precioAnterior}</span>
+                <span class="text-2xl font-serif font-medium tracking-wide text-white">{item.precioEspecial}</span>
+              </div>
+              
+              <a 
+                href={item.linkWhatsAppDirecto}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-promo-enlace flex items-center justify-center w-full py-4 bg-white text-[#000000] text-[10px] tracking-wider uppercase font-bold rounded-xl transition-all duration-75 touch-manipulation [webkit-tap-highlight-color:transparent]"
+              >
+                Adquirir Promo
+              </a>
+            </div>
+          </div>
+        )
+        
+      ))}
+    </div>
+
+  </div>
+</section>
+<script>
+  // Escucha universal para la suavidad de las interacciones generales de la página
+  document.addEventListener("pointerdown", function() {}, {passive: true});
+
+  const enlacesPromo = document.querySelectorAll('.btn-promo-enlace');
+
+  enlacesPromo.forEach(enlace => {
+    enlace.addEventListener('pointerdown', (e) => {
+      if (navigator.vibrate) navigator.vibrate(35);
+
+      const target = e.currentTarget as HTMLElement;
+      target.classList.remove('bg-white', 'text-[#000000]');
+      target.classList.add('bg-[#000000]', 'text-white', 'scale-[0.96]');
+    });
+
+    ['pointerup', 'pointerleave'].forEach(evt => {
+      enlace.addEventListener(evt, (e) => {
+        const target = e.currentTarget as HTMLElement;
+        setTimeout(() => {
+          target.classList.remove('bg-[#000000]', 'text-white', 'scale-[0.96]');
+          target.classList.add('bg-white', 'text-[#000000]');
+        }, 120);
+      });
+    });
+  });
+</script>
+
+<style>
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .image-zoom {
+    will-change: transform;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (min-width: 768px) {
+    .tarjeta-tratamiento:hover .image-zoom {
+      transform: scale(1.04);
+    }
+  }
+</style>

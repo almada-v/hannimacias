@@ -1,0 +1,118 @@
+---
+// src/components/Faq.astro
+const faqs = [
+  {
+    pregunta: "¿Con cuánto tiempo de anticipación debo agendar?",
+    respuesta: "Recomendamos agendar con al menos 48 horas de anticipación para asegurar tu espacio. Sin embargo, si necesitas una cita urgente, escríbenos por WhatsApp para revisar cancelaciones de último momento."
+  },
+  {
+    pregunta: "¿Qué tipo de valoración me hacen antes del tratamiento?",
+    respuesta: "Antes de iniciar cualquier procedimiento, realizamos un diagnóstico digital de tu piel sin costo adicional. Evaluamos tu nivel de hidratación, poros y sensibilidad para adaptar los activos exactamente a lo que necesitas."
+  },
+  {
+    pregunta: "¿Tienen opciones de pago con tarjeta?",
+    respuesta: "Sí, aceptamos todas las tarjetas de crédito y débito (Visa, Mastercard, AMEX), transferencia interbancaria y pagos en efectivo directamente en la clínica."
+  },
+  {
+    pregunta: "¿Los tratamientos tienen algún tiempo de recuperación?",
+    respuesta: "La mayoría de nuestros faciales son cero invasivos; saldrás con el rostro luminoso y lista para tu día. En casos específicos como el Peeling Químico, te daremos indicaciones sencillas de cuidado solar para los días posteriores."
+  }
+];
+---
+
+<section id="faq" class="py-16 md:py-24 bg-[#ffffff] select-none pb-28">
+  <div class="max-w-3xl mx-auto px-6">
+    
+    <!-- Encabezado Clínico de Autor -->
+    <div class="mb-14 text-center">
+      <span class="text-[10px] font-bold tracking-[0.35em] uppercase text-[#737373]">
+        Despeja tus Dudas
+      </span>
+      <h2 class="text-3xl md:text-4xl font-serif font-normal text-[#000000] mt-2 tracking-tight">
+        Preguntas Frecuentes
+      </h2>
+      <div class="w-12 h-0.5 bg-[#4d2819] mx-auto mt-4"></div>
+    </div>
+
+    <!-- Contenedor del Acordeón Minimalista -->
+    <div class="space-y-2">
+      {faqs.map((faq, i) => (
+        <div class="border-b border-[#737373]/10 last:border-none">
+          <button
+            data-index={i}
+            class="btn-faq w-full flex items-center justify-between text-left py-6 gap-6 text-[#000000] font-serif font-normal text-base md:text-lg transition-colors duration-200 focus:outline-none touch-manipulation [webkit-tap-highlight-color:transparent]"
+            aria-expanded="false"
+          >
+            <span>{faq.pregunta}</span>
+            <!-- Icono Plus/Minus de línea fina contemporánea -->
+            <span class="relative flex items-center justify-center w-5 h-5 shrink-0 text-[#737373]/60 transition-transform duration-300">
+              <span class="absolute w-3.5 h-[1.5px] bg-current rounded-full"></span>
+              <span class="absolute w-[1.5px] h-3.5 bg-current rounded-full transition-transform duration-300 linea-vertical"></span>
+            </span>
+          </button>
+
+          <!-- Animación fluida de apertura mediante CSS Grid (Cero saltos en pantallas OLED móviles) -->
+          <div class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out contenido-faq" style="grid-template-rows: 0fr;">
+            <div class="overflow-hidden">
+              <!-- Texto justificado con interlineado relajado y color gris mineral de tu paleta -->
+              <p class="pb-6 pr-4 text-[#737373] text-sm md:text-base leading-relaxed font-light text-justify">
+                {faq.respuesta}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+<script>
+  // Inicialización de eventos rápida para dispositivos móviles y PC
+  document.addEventListener("pointerdown", function() {}, {passive: true});
+
+  const botonesFaq = document.querySelectorAll('.btn-faq');
+
+  botonesFaq.forEach(boton => {
+    // Escucha universal pointerdown: reacciona al instante eliminando el lag en celulares
+    boton.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      
+      const currentBtn = e.currentTarget as HTMLButtonElement;
+      const contenedor = currentBtn.nextElementSibling as HTMLDivElement;
+      const lineaVertical = currentBtn.querySelector('.linea-vertical') as HTMLSpanElement;
+      const isExpanded = currentBtn.getAttribute('aria-expanded') === 'true';
+
+      // Cerrar las demás preguntas de forma simultánea para mantener la limpieza editorial en smartphones
+      botonesFaq.forEach(otherBtn => {
+        if (otherBtn !== currentBtn && otherBtn.getAttribute('aria-expanded') === 'true') {
+          otherBtn.setAttribute('aria-expanded', 'false');
+          otherBtn.classList.remove('text-[#4d2819]');
+          otherBtn.classList.add('text-[#000000]');
+          (otherBtn.nextElementSibling as HTMLDivElement).style.gridTemplateRows = '0fr';
+          const otherVertical = otherBtn.querySelector('.linea-vertical') as HTMLSpanElement;
+          if (otherVertical) otherVertical.style.transform = 'rotate(0deg)';
+        }
+      });
+
+      // Vibración de hardware corta (25ms) para emular un clic mecánico físico
+      if (navigator.vibrate) {
+        navigator.vibrate(25); 
+      }
+
+      // Alternar estados estéticos y lógicos del acordeón actual
+      if (isExpanded) {
+        currentBtn.setAttribute('aria-expanded', 'false');
+        currentBtn.classList.remove('text-[#4d2819]');
+        currentBtn.classList.add('text-[#000000]');
+        contenedor.style.gridTemplateRows = '0fr';
+        if (lineaVertical) lineaVertical.style.transform = 'rotate(0deg)';
+      } else {
+        currentBtn.setAttribute('aria-expanded', 'true');
+        currentBtn.classList.remove('text-[#000000]');
+        currentBtn.classList.add('text-[#4d2819]'); // El título muta a tu color de acento al abrirse
+        contenedor.style.gridTemplateRows = '1fr';
+        if (lineaVertical) lineaVertical.style.transform = 'rotate(90deg)';
+      }
+    });
+  });
+</script>

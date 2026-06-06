@@ -1,0 +1,531 @@
+---
+// src/components/Servicios.astro
+import { Image } from 'astro:assets';
+
+import fotoLimpieza from '../assets/limpieza.webp';
+import fotoHydra from '../assets/hydra.webp';
+import fotoEspalda from '../assets/espalda.webp';
+import fotoDermap from '../assets/dermaplaning.webp';
+import fotoPeel from '../assets/peel.webp';
+import fotoLaser from '../assets/laser.webp';
+
+const tratamientos = [
+  {
+    id: "limpieza",
+    nombre: "Limpieza Facial Profunda",
+    precio: 500, 
+    precioTexto: "$500 MXN",
+    desc: "La limpieza facial profunda es un tratamiento estético que ayuda a eliminar impurezas, exceso de grasa, células muertas y puntos negros acumulados en la piel, favoreciendo una apariencia más limpia, saludable y luminosa.",
+    detalles: ["Limpieza profunda", "Exfoliación y renovación celular","Microdermoabrasión",
+      "Vapor de Ozono", "Extracción de impurezas", "Alta frecuencia", "Mascarilla personalizada",
+      "Fototerapia LED", "Hidratación profunda", "Protector solar"],
+    foto: fotoLimpieza
+  },
+  {
+    id: "hydra",
+    nombre: "HydraFacial",
+    precio: 600,
+    precioTexto: "$600 MXN",
+    desc: "El HydraFacial es un tratamiento facial no invasivo que limpia, exfolia, extrae impurezas e hidrata la piel mediante una tecnología de succión y la aplicación de soluciones especializadas, dejando la piel luminosa, fresca e hidratada desde la primera sesión.",
+    detalles: ["Limpieza profunda", "Exfoliación y renovación celular", "Extracción de impurezas",
+    "Hidratación intensiva", "Aplicación de sérums especializados", "Fototerapia LED", "Protección solar"],
+    foto: fotoHydra
+  },
+  {
+    id: "espalda",
+    nombre: "Limpieza Profunda de Espalda",
+    precio: 700,
+    precioTexto: "$700 MXN",
+    desc: "La limpieza profunda de espalda es un tratamiento diseñado para eliminar impurezas, células muertas, exceso de grasa y comedones (puntos negros) de la piel de la espalda, ayudando a mantenerla limpia, suave y saludable.",
+    detalles: ["Limpieza profunda", "Exfoliación corporal", "Vapor de Ozono",
+    "Extracción de impurezas y comedones", "Alta frecuencia", "Mascarilla purificante o calmante",
+    "Hidratación de la piel", "Protección solar"],
+    foto: fotoEspalda
+  },
+  {
+    id: "dermap",
+    nombre: "Dermaplaning",
+    precio: 250,
+    precioTexto: "$250 MXN",
+    desc: "El dermaplaning es un tratamiento de exfoliación física que elimina las células muertas y el vello fino (vellus) de la superficie de la piel, dejando el rostro más suave y luminoso.",
+    detalles: ["Limpieza profunda", "Desengrase y preparación de la piel", "Dermaplaning (eliminación de células muertas y vello facial fino)",
+    "Mascarilla calmante o hidratante", "Aplicación de sérums nutritivos o hidratantes", "Crema hidratante",
+    "Protección solar"],
+    foto: fotoDermap
+  },
+  {
+    id: "peel",
+    nombre: "Hollywood Peel",
+    precio: 1200,
+    precioTexto: "$1,200 MXN",
+    desc: "El Hollywood Peel es un tratamiento estético realizado con láser y una mascarilla de carbón activado que ayuda a limpiar profundamente la piel, disminuir el exceso de grasa, mejorar la apariencia de los poros y aportar luminosidad inmediata.",
+    detalles: ["Limpieza facial", "Aplicación de mascarilla de carbón activado", "Disparo de láser sobre el carbón activado",
+    "Eliminación de células muertas e impurezas", "Aplicación de sérum calmante e hidratante", "Protección solar"],
+    foto: fotoPeel
+  },
+  {
+    id: "laser",
+    nombre: "Tratamiento Despigmentante con Láser ( Axila, Codos, Rodillas)",
+    precio: 500,
+    precioTexto: "$500 MXN x CADA ZONA",
+    desc: "Es un procedimiento estético que utiliza energía láser para ayudar a disminuir manchas causadas por el sol, envejecimiento, marcas postinflamatorias o tono irregular de la piel. El láser actúa sobre el exceso de pigmento para favorecer una apariencia más uniforme y luminosa.",
+    detalles: ["Limpieza facial", "Preparación de la zona a tratar", "Aplicación de láser despigmentante",
+    "Sérum calmante y regenerador", "Mascarilla calmante", "Protección solar"],
+    foto: fotoLaser
+  }
+];
+
+const telefonoWhatsApp = "523151195149";
+---
+
+<section id="servicios" class="py-16 md:py-24 bg-[#ffffff] select-none overflow-hidden pb-32">
+  <div class="max-w-6xl mx-auto px-6 relative">
+    
+    <!-- Cabecera de la Sección con Controles para PC -->
+    <div class="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+      <div class="text-center md:text-left">
+        <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-[#737373]">
+          Diseña tu Protocolo
+        </span>
+        <h2 class="text-3xl md:text-5xl font-serif text-[#000000] mt-2">Tratamientos Disponibles</h2>
+        <p class="text-[#737373] text-xs sm:text-sm mt-2 max-w-sm font-light leading-relaxed">Selecciona los tratamientos que deseas combinar en tu consulta o agenda uno directamente.</p>
+      </div>
+      
+      <!-- Flechas minimalistas de control visibles en PC/Tablets -->
+      <div class="hidden md:flex items-center gap-3 shrink-0 pb-1 mx-auto md:mx-0">
+        <button 
+          id="btn-carrusel-izq" 
+          class="w-10 h-10 rounded-full border border-[#737373]/20 text-[#000000] flex items-center justify-center transition-all duration-200 hover:border-[#4d2819] hover:text-[#4d2819] active:scale-90 [webkit-tap-highlight-color:transparent]"
+          aria-label="Desplazar tratamientos a la izquierda"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button 
+          id="btn-carrusel-der" 
+          class="w-10 h-10 rounded-full border border-[#737373]/20 text-[#000000] flex items-center justify-center transition-all duration-200 hover:border-[#4d2819] hover:text-[#4d2819] active:scale-90 [webkit-tap-highlight-color:transparent]"
+          aria-label="Desplazar tratamientos a la derecha"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Carrusel Táctil Responsivo -->
+    <div id="contenedor-carrusel" class="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scrollbar-none scroll-smooth items-stretch">
+      {tratamientos.map((item, index) => (
+        <div class="tarjeta-tratamiento min-w-[85%] sm:min-w-[320px] md:min-w-[350px] snap-center md:snap-start flex flex-col bg-white rounded-3xl border border-[#737373]/10 shadow-[0_4px_30px_rgba(0,0,0,0.01)] overflow-hidden transition-all duration-300">
+          
+          <div class="w-full h-52 sm:h-60 overflow-hidden relative bg-neutral-100">
+            <Image 
+              src={item.foto} 
+              alt={item.nombre} 
+              class="w-full h-full object-cover transition-transform duration-700 image-zoom" 
+              width={400}
+              height={300}
+              widths={[380, 720]}
+              sizes="(max-width: 640px) 380px, 720px"
+              loading="lazy" 
+              fetchpriority="low"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          </div>
+
+          <div class="p-6 sm:p-8 flex flex-col flex-grow text-left justify-between">
+            <div class="space-y-2">
+              <h3 class="text-lg sm:text-xl font-serif text-[#000000] leading-tight">{item.nombre}</h3>
+              <p class="text-[#4d2819] font-medium text-sm sm:text-base font-sans tracking-wide">{item.precioTexto}</p>
+              <p class="text-[#737373] text-xs sm:text-sm leading-relaxed pt-2 font-light text-justify">{item.desc}</p>
+              
+              <!-- ACORDEÓN DE DETALLES -->
+              <div class="pt-2">
+                <button class="btn-detalles flex items-center gap-1 text-[10px] font-bold tracking-wider text-[#737373]/70 uppercase transition-colors duration-200 [webkit-tap-highlight-color:transparent]">
+                  <span>Ver lo que incluye</span>
+                  <svg class="w-3 h-3 transition-transform duration-300 icon-flecha" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg); transition: transform 0.3s ease-in-out;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                
+                <div class="contenedor-detalles max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0px; opacity: 0; transition: all 0.3s ease-in-out;">
+                  <ul class="pt-3 space-y-1.5 border-t border-[#737373]/10 mt-2">
+                    {item.detalles.map((detalle) => (
+                      <li class="text-[#737373] text-xs flex items-start gap-2 font-light">
+                        <span class="text-[#4d2819] mt-0.5">•</span>
+                        <span>{detalle}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Doble Botonera Responsiva -->
+            <div class="pt-6 grid grid-cols-2 gap-2">
+              <button 
+                data-id={item.id}
+                data-nombre={item.nombre}
+                data-precio={item.precio}
+                class="btn-seleccionar w-full py-3.5 border border-[#000000] text-[#000000] bg-transparent transition-all duration-100 uppercase text-[9px] tracking-wider font-bold rounded-xl touch-manipulation [webkit-tap-highlight-color:transparent]"
+              >
+                + Carrito
+              </button>
+              <a 
+                href={`https://wa.me/${telefonoWhatsApp}?text=${encodeURIComponent("¡Hola! Me interesa agendar una cita.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-nombre={item.nombre}
+                data-precio={item.precioTexto}
+                class="btn-agendar-ya flex items-center justify-center w-full py-3.5 bg-[#000000] text-white transition-all duration-100 uppercase text-[9px] tracking-wider font-bold rounded-xl touch-manipulation [webkit-tap-highlight-color:transparent]"
+              >
+                Agendar Ya
+              </a>
+            </div>
+          </div>
+
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- BARRA FLOTANTE DEL CARRITO PREMIUM -->
+<div 
+  id="barra-carrito" 
+  class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-[#737373]/10 z-50 shadow-[0_-12px_40px_rgba(0,0,0,0.05)] transition-all duration-300 translate-y-full select-none rounded-t-3xl max-h-[85vh] flex flex-col"
+>
+  <!-- Cabecera de Control Premium -->
+  <button id="btn-toggle-resumen" class="w-full py-4 flex items-center justify-center gap-2 border-b border-[#737373]/5 bg-[#ffffff] [webkit-tap-highlight-color:transparent] rounded-t-3xl transition-colors duration-200">
+    <span id="txt-toggle" class="text-[10px] font-bold tracking-[0.2em] text-[#737373] uppercase">Ver resumen de servicios</span>
+    <svg id="flecha-resumen" class="w-3 h-3 text-[#737373]/60 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg); transition: transform 0.3s ease;">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path>
+    </svg>
+  </button>
+
+  <!-- Contenedor del Resumen Estilizado -->
+  <div id="cuerpo-resumen" class="max-h-0 opacity-0 overflow-y-auto px-6 bg-[#ffffff] transition-all duration-300 ease-in-out" style="max-height: 0px; opacity: 0;">
+    <ul id="lista-resumen-items" class="divide-y divide-[#737373]/10 max-h-56 overflow-y-auto scrollbar-none py-1">
+      <!-- Elementos dinámicos del DOM -->
+    </ul>
+  </div>
+
+  <!-- Fila de Control Base Inferior Fija -->
+  <div class="p-5 px-6 flex items-center justify-between gap-4 bg-white border-t border-[#737373]/10 rounded-b-3xl">
+    <div class="flex flex-col text-left">
+      <span id="carrito-cantidad" class="text-[9px] font-bold tracking-[0.15em] text-[#4d2819] uppercase">0 TRATAMIENTOS</span>
+      <span id="carrito-total" class="text-lg font-serif text-[#000000] font-medium tracking-wide">$0 MXN</span>
+    </div>
+
+    <!-- Enlace nativo precargado con ruta segura para evitar errores de accesibilidad -->
+    <a 
+      href={`https://wa.me/${telefonoWhatsApp}?text=${encodeURIComponent("¡Hola! Me interesa agendar una cita.")}`}
+      id="btn-enviar-carrito"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-telefono={telefonoWhatsApp}
+      class="flex items-center justify-center gap-2 bg-[#4d2819] text-white text-xs font-bold uppercase tracking-[0.12em] py-4 px-7 rounded-xl transition-all duration-150 shadow-md shadow-[#4d2819]/10 touch-manipulation [webkit-tap-highlight-color:transparent]"
+      aria-label="Agendar paquete de tratamientos seleccionados"
+    >
+      <span>Agendar Paquete</span>
+    </a>
+  </div>
+</div>
+<script>
+  // Asegura la respuesta táctil instantánea global en dispositivos móviles
+  document.addEventListener("pointerdown", function() {}, {passive: true});
+
+  let carrito: any[] = [];
+  let resumenAbierto = false;
+
+  // Comunicación global con el botón de WhatsApp
+  const win = window as any;
+  win.estadoCarritoGlobal = { totalProductos: 0, resumenAbierto: false };
+
+  const botonesSeleccionar = document.querySelectorAll('.btn-seleccionar');
+  const botonesAgendarYa = document.querySelectorAll('.btn-agendar-ya');
+  const botonesDetalles = document.querySelectorAll('.btn-detalles');
+  
+  const barraCarrito = document.getElementById('barra-carrito');
+  const btnToggleResumen = document.getElementById('btn-toggle-resumen');
+  const cuerpoResumen = document.getElementById('cuerpo-resumen');
+  const txtToggle = document.getElementById('txt-toggle');
+  const flechaResumen = document.getElementById('flecha-resumen');
+  const listaResumenItems = document.getElementById('lista-resumen-items');
+  
+  const txtCantidad = document.getElementById('carrito-cantidad');
+  const txtTotal = document.getElementById('carrito-total');
+  
+  // Casteado correctamente como HTMLAnchorElement para que sea compatible con iPad
+  const btnEnviar = document.getElementById('btn-enviar-carrito') as HTMLAnchorElement;
+
+  // LÓGICA DE CONTROL DEL CARRUSEL EN COMPUTADORAS
+  const carruselContainer = document.getElementById('contenedor-carrusel');
+  const btnIzq = document.getElementById('btn-carrusel-izq');
+  const btnDer = document.getElementById('btn-carrusel-der');
+
+  if (carruselContainer && btnIzq && btnDer) {
+    const calcularAnchoDesplazamiento = () => {
+      const primeraTarjeta = carruselContainer.querySelector('.tarjeta-tratamiento');
+      return primeraTarjeta ? primeraTarjeta.clientWidth + 24 : 380; 
+    };
+
+    btnDer.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      if (navigator.vibrate) navigator.vibrate(15);
+      carruselContainer.scrollLeft += calcularAnchoDesplazamiento();
+    });
+
+    btnIzq.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      if (navigator.vibrate) navigator.vibrate(15);
+      carruselContainer.scrollLeft -= calcularAnchoDesplazamiento();
+    });
+  }
+
+  const telefonoWhatsApp = btnEnviar?.getAttribute('data-telefono') || "523151195149";
+
+  // Limpia el estado interno y visual del carrito por completo (Casteo Corregido)
+  function vaciarCarritoPorCompleto() {
+    carrito = [];
+    
+    botonesSeleccionar.forEach(elemento => {
+      const btn = elemento as HTMLButtonElement;
+      btn.innerText = "+ Carrito";
+      btn.classList.remove('bg-[#4d2819]', 'text-white', 'border-[#4d2819]');
+      btn.classList.add('text-[#000000]', 'border-[#000000]', 'bg-transparent');
+    });
+
+    actualizarCarritoUI();
+  }
+
+  function renderizarListaResumen() {
+    if (!listaResumenItems) return;
+    listaResumenItems.innerHTML = '';
+    
+    carrito.forEach((item) => {
+      const li = document.createElement('li');
+      li.className = 'py-4 flex items-center justify-between text-xs group transition-all duration-200 border-b border-[#737373]/5';
+      li.innerHTML = `
+        <div class="flex flex-col text-left pr-4 space-y-0.5">
+          <span class="font-serif text-[#000000] font-medium text-[14px] tracking-wide leading-tight">${item.nombre}</span>
+          <span class="text-[#4d2819] text-[11px] font-medium font-sans tracking-wide">$${item.precio.toLocaleString('es-MX')} MXN</span>
+        </div>
+        <button 
+          data-remove-id="${item.id}" 
+          class="text-[#737373]/50 hover:text-red-500 p-2.5 rounded-full hover:bg-red-50/50 active:bg-red-50 active:text-red-500 transition-all duration-150 [webkit-tap-highlight-color:transparent]"
+          aria-label="Eliminar del paquete"
+        >
+          <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      `;
+      listaResumenItems.appendChild(li);
+    });
+
+    listaResumenItems.querySelectorAll('button[data-remove-id]').forEach(btnBasurero => {
+      btnBasurero.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        const target = e.currentTarget as HTMLElement;
+        const idParaQuitar = target.getAttribute('data-remove-id');
+        
+        const index = carrito.findIndex(item => item.id === idParaQuitar);
+        if (index > -1) carrito.splice(index, 1);
+
+        const botonCard = document.querySelector(`.btn-seleccionar[data-id="${idParaQuitar}"]`) as HTMLButtonElement;
+        if (botonCard) {
+          botonCard.innerText = "+ Carrito";
+          botonCard.classList.remove('bg-[#4d2819]', 'text-white', 'border-[#4d2819]');
+          botonCard.classList.add('text-[#000000]', 'border-[#000000]', 'bg-transparent');
+        }
+
+        if (navigator.vibrate) navigator.vibrate(25);
+        actualizarCarritoUI();
+      });
+    });
+  }
+
+  function toggleResumen(forzarCierre = false) {
+    if (!cuerpoResumen || !txtToggle) return;
+    if (resumenAbierto || forzarCierre) {
+      cuerpoResumen.style.maxHeight = '0px';
+      cuerpoResumen.style.opacity = '0';
+      txtToggle.innerText = 'Ver resumen de servicios';
+      if (flechaResumen) flechaResumen.style.transform = 'rotate(0deg)';
+      resumenAbierto = false;
+    } else {
+      renderizarListaResumen();
+      cuerpoResumen.style.maxHeight = '320px'; 
+      cuerpoResumen.style.opacity = '1';
+      txtToggle.innerText = 'Ocultar resumen';
+      if (flechaResumen) flechaResumen.style.transform = 'rotate(180deg)';
+      resumenAbierto = true;
+    }
+    win.estadoCarritoGlobal.resumenAbierto = resumenAbierto;
+  }
+
+  btnToggleResumen?.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    if (navigator.vibrate) navigator.vibrate(15);
+    toggleResumen();
+  });
+
+  // Botón "+ Carrito" de cada Card (Casteo Corregido)
+  botonesSeleccionar.forEach(boton => {
+    boton.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      const btn = e.currentTarget as HTMLButtonElement;
+      const id = btn.getAttribute('data-id');
+      const nombre = btn.getAttribute('data-nombre');
+      const precio = parseInt(btn.getAttribute('data-precio') || '0');
+
+      const index = carrito.findIndex(item => item.id === id);
+      if (navigator.vibrate) navigator.vibrate(30); 
+
+      if (index > -1) {
+        carrito.splice(index, 1);
+        btn.innerText = "+ Carrito";
+        btn.classList.remove('bg-[#4d2819]', 'text-white', 'border-[#4d2819]');
+        btn.classList.add('text-[#000000]', 'border-[#000000]', 'bg-transparent');
+      } else {
+        carrito.push({ id, nombre, precio });
+        btn.innerText = "✓ Agregado";
+        btn.classList.remove('text-[#000000]', 'border-[#000000]', 'bg-transparent');
+        btn.classList.add('bg-[#4d2819]', 'text-white', 'border-[#4d2819]');
+      }
+
+      actualizarCarritoUI();
+    });
+  });
+  function actualizarCarritoUI() {
+    const totalTratamientos = carrito.length;
+    win.estadoCarritoGlobal.totalProductos = totalTratamientos;
+    
+    if (totalTratamientos > 0) {
+      const sumaTotal = carrito.reduce((sum, item) => sum + item.precio, 0);
+      if (txtCantidad) txtCantidad.innerText = `${totalTratamientos} ${totalTratamientos === 1 ? 'TRATAMIENTO' : 'TRATAMIENTOS'}`;
+      if (txtTotal) txtTotal.innerText = `$${sumaTotal.toLocaleString('es-MX')} MXN`;
+      
+      barraCarrito?.classList.remove('translate-y-full');
+      if (resumenAbierto) renderizarListaResumen();
+      
+      // PRE-INYECCIÓN CONTINUA: Mantiene calculada la URL en la etiqueta HTML para que iPad responda de inmediato
+      if (btnEnviar) {
+        let mensajeFinal = "";
+        if (totalTratamientos === 1) {
+          const unicoItem = carrito[0];
+          mensajeFinal = `¡Hola! Me interesa agendar una cita para el siguiente tratamiento de cosmetología:\n\n• *${unicoItem.nombre}* — $${unicoItem.precio.toLocaleString('es-MX')} MXN\n\n¿Cuáles son sus fechas disponibles para la valoración?`;
+        } else {
+          mensajeFinal = `¡Hola! Me gustaría diseñar un protocolo personalizado combinando estos tratamientos:\n\n`;
+          carrito.forEach((item, index) => {
+            mensajeFinal += `${index + 1}. *${item.nombre}* — $${item.precio.toLocaleString('es-MX')} MXN\n`;
+          });
+          mensajeFinal += `\n*Total de la Sesión:* $${sumaTotal.toLocaleString('es-MX')} MXN\n\n¿Cuáles son sus fechas disponibles para la valoración?`;
+        }
+        btnEnviar.href = `https://wa.me/${telefonoWhatsApp}?text=${encodeURIComponent(mensajeFinal)}`;
+      }
+    } else {
+      toggleResumen(true); 
+      barraCarrito?.amssymb;
+      barraCarrito?.classList.add('translate-y-full');
+    }
+  }
+
+  // Acordeón de detalles aislado por elemento mediante pointerdown
+  botonesDetalles.forEach(btn => {
+    btn.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      const boton = e.currentTarget as HTMLElement;
+      const contenedor = boton.nextElementSibling as HTMLElement;
+      const flecha = boton.querySelector('.icon-flecha') as HTMLElement;
+
+      if (contenedor.style.maxHeight && contenedor.style.maxHeight !== '0px') {
+        contenedor.style.maxHeight = '0px';
+        contenedor.style.opacity = '0';
+        if (flecha) flecha.style.transform = 'rotate(0deg)';
+      } else {
+        contenedor.style.maxHeight = contenedor.scrollHeight + 'px';
+        contenedor.style.opacity = '1';
+        if (flecha) flecha.style.transform = 'rotate(180deg)';
+      }
+    });
+  });
+
+  // Botón "Agendar Ya" (Inyección nativa directa sobre el atributo HTML para evitar bloqueos)
+  botonesAgendarYa.forEach(boton => {
+    boton.addEventListener('pointerdown', (e) => {
+      if (navigator.vibrate) navigator.vibrate(40);
+      const target = e.currentTarget as HTMLAnchorElement;
+      
+      target.classList.remove('bg-[#000000]');
+      target.classList.add('bg-[#4d2819]', 'scale-[0.96]');
+
+      const nombreTratamiento = target.getAttribute('data-nombre') || "";
+      const precioTratamiento = target.getAttribute('data-precio') || "";
+      
+      const mensajeDirecto = `¡Hola! Me interesa agendar una cita directamente para el siguiente tratamiento:\n\n• *${nombreTratamiento}* (${precioTratamiento})\n\n¿Qué horarios tienen disponibles?`;
+      
+      target.href = `https://wa.me/${telefonoWhatsApp}?text=${encodeURIComponent(mensajeDirecto)}`;
+    });
+
+    ['pointerup', 'pointerleave'].forEach(evt => {
+      boton.addEventListener(evt, (e) => {
+        const target = e.currentTarget as HTMLElement;
+        setTimeout(() => {
+          target.classList.remove('bg-[#4d2819]', 'scale-[0.96]');
+          target.classList.add('bg-[#000000]');
+        }, 150);
+      });
+    });
+  });
+
+  // Disparador de Presión: Aplica la animación elástica mecánica al primer contacto táctil
+  btnEnviar?.addEventListener('pointerdown', (e) => {
+    if (carrito.length === 0) {
+      e.preventDefault();
+      return;
+    }
+    if (navigator.vibrate) navigator.vibrate(45);
+
+    const target = e.currentTarget as HTMLElement;
+    target.classList.remove('bg-[#4d2819]');
+    target.classList.add('bg-[#000000]', 'scale-[0.96]');
+  });
+
+  // SOLUCIÓN DEFINITIVA PARA IPAD: Disparo mediante .click() nativo y auto-vaciado al soltar el dedo (pointerup)
+  btnEnviar?.addEventListener('pointerup', (e) => {
+    if (carrito.length === 0) return;
+    e.preventDefault(); 
+    
+    const target = e.currentTarget as HTMLAnchorElement;
+
+    // Ejecuta la acción nativa de navegación directamente del elemento HTML. El iPad no puede bloquear esto.
+    target.click();
+
+    // Restaura la estética de la botonera flotante y vacía los tratamientos seleccionados
+    setTimeout(() => {
+      target.classList.remove('bg-[#000000]', 'scale-[0.96]');
+      target.classList.add('bg-[#4d2819]');
+      vaciarCarritoPorCompleto();
+    }, 200); 
+  });
+
+  btnEnviar?.addEventListener('pointerleave', (e) => {
+    const target = e.currentTarget as HTMLElement;
+    target.classList.remove('bg-[#000000]', 'scale-[0.96]');
+    target.classList.add('bg-[#4d2819]');
+  });
+</script>
+
+<style>
+  /* Ocultar barra de scroll nativa en carruseles táctiles móviles */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>
