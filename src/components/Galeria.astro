@@ -1,16 +1,37 @@
 ---
-// src/components/Galeria.astro
 import { Image } from 'astro:assets';
 
 import fotoCabina from '../assets/cabina.webp';
 import fotoTratamiento from '../assets/tratamiento.webp';
 import fotoProductos from '../assets/productos.webp';
 
-const telefonoWhatsApp = "523151195149";
+// 1. DEFINICIÓN DE TIPOS (La forma correcta de documentar tu código en Astro)
+interface TarjetaPromo {
+  tipo: "promocion";
+  tituloPromo: string;
+  subtituloPromo: string;
+  descPromo: string;
+  precioAnterior: string;
+  precioEspecial: string;
+  linkWhatsAppDirecto: string;
+}
 
-const elementosGaleria = [
-  // OPTIMIZACIÓN: Movimos la promoción a la primera posición para que sea lo primero visible en celulares
-  {
+interface TarjetaFoto {
+  tipo: "foto";
+  srcLocal: ImageMetadata;
+  alt: string;
+  titulo: string;
+  desc: string;
+}
+
+// Un elemento de la galería puede ser de un tipo O del otro
+type ElementoGaleria = TarjetaPromo | TarjetaFoto;
+
+const telefonoWhatsApp = "523151204677";
+
+// 2. CONFIGURACIÓN DE PROMOCIONES (Deja el arreglo vacío [] si no hay promos)
+const promocionesActivas: TarjetaPromo[] = [
+ /*  {
     tipo: "promocion",
     tituloPromo: "Protocolo Glow de Temporada",
     subtituloPromo: "Beneficio Exclusivo",
@@ -18,7 +39,11 @@ const elementosGaleria = [
     precioAnterior: "$1,100",
     precioEspecial: "$950 MXN",
     linkWhatsAppDirecto: `https://wa.me/${telefonoWhatsApp}?text=${encodeURIComponent("¡Hola! Vi la promoción del Protocolo Glow de Temporada en la web y me gustaría agendarlo.")}`
-  },
+  } */
+];
+
+// 3. FOTOS DE LA GALERÍA
+const fotosGaleria: TarjetaFoto[] = [
   {
     tipo: "foto",
     srcLocal: fotoCabina,
@@ -41,12 +66,19 @@ const elementosGaleria = [
     desc: "Seleccionamos de manera rigurosa activos de grado médico y alta potencia para tu piel."
   }
 ];
+
+// Fusionamos los arreglos usando el tipo unificado
+const elementosGaleria: ElementoGaleria[] = [...promocionesActivas, ...fotosGaleria];
+
+const totalElementos = elementosGaleria.length;
+const gridColsClass = totalElementos === 1 ? 'lg:grid-cols-1' : 
+                      totalElementos === 2 ? 'lg:grid-cols-2' : 
+                      totalElementos === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4';
 ---
 
 <section id="galeria" class="py-16 md:py-24 bg-[#ffffff] select-none overflow-hidden pb-24">
   <div class="max-w-6xl mx-auto px-6">
     
-    <!-- Cabecera Estilo Boutique Cosmética -->
     <div class="mb-12 text-center">
       <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-[#737373]">
         Conoce Nuestro Espacio
@@ -55,16 +87,16 @@ const elementosGaleria = [
       <div class="w-12 h-0.5 bg-[#4d2819] mx-auto mt-4"></div>
     </div>
 
-    <!-- CARRUSEL TÁCTIL: Ahora la promo arranca al inicio de la navegación lateral móvil -->
-    <div class="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scrollbar-none scroll-smooth items-stretch">
+    <div class={`flex md:grid md:grid-cols-2 ${gridColsClass} gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scrollbar-none scroll-smooth items-stretch`}>
       {elementosGaleria.map((item) => (
         
         item.tipo === "foto" ? (
-          <div class="min-w-[92%] sm:min-w-[340px] md:min-w-full snap-center flex flex-col bg-white rounded-3xl border border-[#737373]/10 shadow-[0_4px_30px_rgba(0,0,0,0.01)] overflow-hidden transition-all duration-300">
+          /* Al validar item.tipo === "foto", Astro ya sabe con certeza que es una TarjetaFoto */
+          <div class="tarjeta-tratamiento min-w-[92%] sm:min-w-[340px] md:min-w-full snap-center flex flex-col bg-white rounded-3xl border border-[#737373]/10 shadow-[0_4px_30px_rgba(0,0,0,0.01)] overflow-hidden transition-all duration-300">
             <div class="w-full h-76 sm:h-80 overflow-hidden relative bg-neutral-100">
               <Image 
-                src={item.srcLocal!} 
-                alt={item.alt!} 
+                src={item.srcLocal} 
+                alt={item.alt} 
                 class="w-full h-full object-cover transition-transform duration-700 image-zoom" 
                 width={480}
                 height={380}
@@ -83,7 +115,7 @@ const elementosGaleria = [
             </div>
           </div>
         ) : (
-          
+          /* Aquí Astro sabe con certeza que es una TarjetaPromo, por lo que no marca error */
           <div class="min-w-[92%] sm:min-w-[340px] md:min-w-full snap-center flex flex-col bg-[#4d2819] rounded-3xl p-8 text-left justify-between shadow-xl shadow-[#4d2819]/10 relative overflow-hidden text-white border border-[#4d2819]">
             <div class="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none"></div>
             
@@ -122,29 +154,28 @@ const elementosGaleria = [
 
   </div>
 </section>
+
 <script>
-  // Escucha universal para la suavidad de las interacciones generales de la página
   document.addEventListener("pointerdown", function() {}, {passive: true});
 
-  const enlacesPromo = document.querySelectorAll('.btn-promo-enlace');
+  document.addEventListener('pointerdown', (e) => {
+    const target = (e.target as HTMLElement).closest('.btn-promo-enlace');
+    if (!target) return;
 
-  enlacesPromo.forEach(enlace => {
-    enlace.addEventListener('pointerdown', (e) => {
-      if (navigator.vibrate) navigator.vibrate(35);
+    if (navigator.vibrate) navigator.vibrate(35);
+    target.classList.remove('bg-white', 'text-[#000000]');
+    target.classList.add('bg-[#000000]', 'text-white', 'scale-[0.96]');
+  });
 
-      const target = e.currentTarget as HTMLElement;
-      target.classList.remove('bg-white', 'text-[#000000]');
-      target.classList.add('bg-[#000000]', 'text-white', 'scale-[0.96]');
-    });
+  ['pointerup', 'pointerleave'].forEach(evt => {
+    document.addEventListener(evt, (e) => {
+      const target = (e.target as HTMLElement).closest('.btn-promo-enlace');
+      if (!target) return;
 
-    ['pointerup', 'pointerleave'].forEach(evt => {
-      enlace.addEventListener(evt, (e) => {
-        const target = e.currentTarget as HTMLElement;
-        setTimeout(() => {
-          target.classList.remove('bg-[#000000]', 'text-white', 'scale-[0.96]');
-          target.classList.add('bg-white', 'text-[#000000]');
-        }, 120);
-      });
+      setTimeout(() => {
+        target.classList.remove('bg-[#000000]', 'text-white', 'scale-[0.96]');
+        target.classList.add('bg-white', 'text-[#000000]');
+      }, 120);
     });
   });
 </script>
